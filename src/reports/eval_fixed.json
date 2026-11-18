@@ -1,9 +1,9 @@
 {
-  "run_id": "E-fixed-20261118-608a",
+  "run_id": "E-fixed-20261118-531b",
   "shape": "fixed",
   "manifest": {
     "eval_set": "data/eval/eval_set_v1.jsonl",
-    "eval_set_sha": "608a883d9736",
+    "eval_set_sha": "531bb9a9a2a1",
     "items": 14,
     "seeds": [
       11,
