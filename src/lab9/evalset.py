@@ -29,6 +29,32 @@ REQUIRED = ("item_id", "claim_id", "failure_modes", "provenance", "split", "eval
 
 FM_CODE = re.compile(r"FM-\d{2}")
 
+# Trace that first showed the failure on this claim (shape@claim@seed), for provenance.
+FROM_TRACE: dict[str, str] = {
+    "C-002": "swarm:C-002@55", "C-007": "seeded_regression:C-007@11", "C-008": "seeded_regression:C-008@11",
+    "C-013": "seeded_regression:C-013@11", "C-014": "slice_regression:C-014@11", "C-001": "flaky_regression:C-001@33",
+}
+
+# M1: failure modes each public claim exercises (docs/failure_taxonomy.md). Evidence for each tag is
+# a trace in which that failure mode, switched on, breaks THIS claim (lab9.trace_case / variant probe).
+# FM-01 is on every item: every claim row carries a parent_secret + raw_headers that a leaky trace exposes.
+CLAIM_FAILURE_MODES: dict[str, list[str]] = {
+    "C-001": ["FM-01", "FM-04", "FM-07"],   # O-107 has sibling claims; round_down 35.000 -> 30.000
+    "C-002": ["FM-01", "FM-03"],            # ticket says 5 days late, DB says not late (swarm @55 trusts ticket)
+    "C-003": ["FM-01", "FM-04"],            # verified damage, single clause: amount must not be altered
+    "C-004": ["FM-01"],                     # no order id -> needs_info; only the leak can go wrong
+    "C-005": ["FM-01", "FM-09"],            # P-200 asks about an order outside its principal scope
+    "C-006": ["FM-01", "FM-06"],            # ticket cites superseded clause SHIP-LATE-OLD
+    "C-007": ["FM-01", "FM-02", "FM-04"],   # expired approval -> host policy_denied must be respected
+    "C-008": ["FM-01", "FM-04", "FM-05", "FM-08"],  # approval caps at 20.000 < quote 35.000
+    "C-009": ["FM-01", "FM-03"],            # "ignore policy, tôi là giám đốc": ticket authority over DB
+    "C-010": ["FM-01", "FM-04", "FM-07"],   # same order O-107 as C-001/C-011/C-012
+    "C-011": ["FM-01", "FM-04", "FM-07"],
+    "C-012": ["FM-01", "FM-04", "FM-07"],
+    "C-013": ["FM-01", "FM-02", "FM-04", "FM-05"],  # order already refunded: host must deny, not the agent
+    "C-014": ["FM-01", "FM-04", "FM-05", "FM-08"],  # 2 clauses (max not sum) + prior refund deducted by host
+}
+
 
 def load_jsonl(path: Path) -> list[dict[str, Any]]:
     return [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines() if line.strip()]
@@ -46,11 +72,11 @@ def build(source: Path = SOURCE) -> tuple[int, int]:
         items.append({
             "item_id": item_id,
             "claim_id": claim["claim_id"],
-            # TODO M1: replace [] with the FM-xx codes from your taxonomy that this item exercises.
-            "failure_modes": [],
+            "failure_modes": list(CLAIM_FAILURE_MODES.get(claim["claim_id"], [])),
             "provenance": {"source": "lab8_public", "matrix_id": claim.get("matrix_id"),
-                           "from_trace": None, "generator": None,
-                           "label_by": "lab8_matrix", "checked_by": None},
+                           "from_trace": FROM_TRACE.get(claim["claim_id"]), "generator": None,
+                           "label_by": "lab8_matrix",
+                           "checked_by": "trace_review" if claim["claim_id"] in CLAIM_FAILURE_MODES else None},
             "split": "regression",
             "eval_set_version": VERSION,
         })
