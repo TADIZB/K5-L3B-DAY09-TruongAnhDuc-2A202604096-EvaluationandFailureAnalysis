@@ -12,7 +12,7 @@ python -m lab9.trace_case --shape fixed --claim C-002 --seed 11   # đối chứ
 
 | Trường | Nội dung |
 |---|---|
-| Trial | `seeded_regression C-002@11`, report `E-seeded_regression-20261118-608a` (row `E-002`, seed 11) |
+| Trial | `seeded_regression C-002@11`, report `E-seeded_regression-20261118-531b` (row `E-002`, seed 11) |
 | Triệu chứng | lab8 grader FAIL `status resolved != denied`. `refund_amount_correct` False (ledger 20.000 ≠ nhãn 0), `db_fact_kept` False, `proposal_matches_policy` False. Reply "Dạ, LogiX đã hoàn 20.000đ cho đơn O-202." khớp ledger, nên đọc reply thì tưởng ổn. Đọc ledger mới thấy đã chi 20.000đ cho claim phải bị từ chối. |
 | Bước sai đầu tiên | **event 3 `model_override` `{"delay_days": 5}`** |
 | Vì sao là bước *đầu tiên* | Event 1 `handoff`: đúng tool, scope `owner_order_only`. Event 2 `investigator`: `lookup_order` trả O-202 `status: delivered`, `delay_days: 2` (chưa đủ ngưỡng trễ để được hoàn), đúng sự thật. Event 3 lấy số "5 ngày" từ ticket ("Đơn giao trễ 5 ngày…") đè lên DB, nên mọi bước sau (event 4 quote 20.000 theo `SHIP-LATE-03`, ghi ledger, event 6 reply) đều tính trên dữ liệu sai. |

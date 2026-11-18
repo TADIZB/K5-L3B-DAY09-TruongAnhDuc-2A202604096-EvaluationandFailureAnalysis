@@ -1,6 +1,6 @@
 # Failure taxonomy v1
 
-Nguồn bằng chứng: `python -m lab9.trace_case --shape <shape> --claim <C-xxx> --seed <s>` (eval set v1 `608a883d9736`, MockLLM, seed cố định nên tái lập được). "Probe" = shape `lab9.variant_agent.make_shape(name, {"no_override", <bug>})` chạy trên 14 claim @11 để xem lỗi đó làm hỏng claim nào; các shape `seeded_regression`, `slice_regression`, `flaky_regression` là variant công khai trong `lab9/variants.py`.
+Nguồn bằng chứng: `python -m lab9.trace_case --shape <shape> --claim <C-xxx> --seed <s>` (eval set v1 `531bb9a9a2a1`, MockLLM, seed cố định nên tái lập được). "Probe" = shape `lab9.variant_agent.make_shape(name, {"no_override", <bug>})` chạy trên 14 claim @11 để xem lỗi đó làm hỏng claim nào; các shape `seeded_regression`, `slice_regression`, `flaky_regression` là variant công khai trong `lab9/variants.py`.
 
 | ID | Tên | Định nghĩa (1 câu) | Layer | Bằng chứng (claim@seed / trace) | Grader | Metric |
 |---|---|---|---|---|---|---|
@@ -28,5 +28,5 @@ Mã và tên ngắn cố định (dùng trong `failure_modes` của eval set). Q
 
 ## Gắn vào eval set
 
-`src/lab9/evalset.py` → `CLAIM_FAILURE_MODES` (tag) và `FROM_TRACE` (provenance `from_trace`). `python -m lab9.evalset --build --check` → `eval set 608a883d9736: 0 problem(s)`.
-v2: `config/fm_map.yaml` ánh xạ 8 cơ chế tấn công sang FM-02…FM-09; `python -m lab9.evalset --v2 --build` → `77e7f331e4c7: 0 problem(s)` (mỗi FM bị tấn công có ≥3 item).
+`src/lab9/evalset.py` → `CLAIM_FAILURE_MODES` (tag) và `FROM_TRACE` (provenance `from_trace`). `python -m lab9.evalset --build --check` → `eval set 531bb9a9a2a1: 0 problem(s)`.
+v2: `config/fm_map.yaml` ánh xạ 8 cơ chế tấn công sang FM-02…FM-09; `python -m lab9.evalset --v2 --build` → `8723efd3d05f: 0 problem(s)` (mỗi FM bị tấn công có ≥3 item).

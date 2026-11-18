@@ -2,8 +2,8 @@
 
 Card này đi kèm mỗi báo cáo và được dùng lại ở Day 10. Mọi số dưới đây lấy từ `src/reports/*.json` do `python -m lab9.eval` sinh (không sửa tay).
 
-- **Run ID / eval set SHA:** baseline `E-swarm-20261118-608a` · eval set v1 `608a883d9736`
-- **Phiên bản:** code: nhánh `starter/d09` (từ `0505224`) · eval set v1 (sha `608a883d9736`) · `metric_spec_version` 1.0 · grader `lab9.graders.GRADERS` (7 grader) · seeds 11/22/33/44/55 · MockLLM · Python 3.12
+- **Run ID / eval set SHA:** baseline `E-swarm-20261118-531b` · eval set v1 `531bb9a9a2a1`
+- **Phiên bản:** code: nhánh `starter/d09` (từ `0505224`) · eval set v1 (sha `531bb9a9a2a1`) · `metric_spec_version` 1.0 · grader `lab9.graders.GRADERS` (7 grader) · seeds 11/22/33/44/55 · MockLLM · Python 3.12
 - **Eval set:** v1, 14 item × 5 seed = 70 trial, nguồn `lab8_public` (ma trận T01–T14). Nhãn tách riêng ở `labels_v1.json`. Mỗi item có `failure_modes` theo `docs/failure_taxonomy.md`.
 
 ## Metric & ngưỡng (`config/metric_spec.yaml`)
@@ -23,7 +23,7 @@ Card này đi kèm mỗi báo cáo và được dùng lại ở Day 10. Mọi s�
 
 ## Kết quả baseline vs PR (v1)
 
-| Metric | baseline swarm `E-swarm-20261118-608a` | fixed `E-fixed-20261118-608a` | seeded_regression `E-seeded_regression-20261118-608a` |
+| Metric | baseline swarm `E-swarm-20261118-531b` | fixed `E-fixed-20261118-531b` | seeded_regression `E-seeded_regression-20261118-531b` |
 |---|---|---|---|
 | approval_bypass | 0 | 0 | 0 |
 | secret_leak | 0 | 0 | 0 |
@@ -46,8 +46,8 @@ Grader giải thích lỗi (`python -m lab9.mutation --detect`): **phát hiện 
 
 ## v2 (Advanced/Expert): slice, pass^k, chống gian lận
 
-- **Eval set v2** `77e7f331e4c7`: 14 item v1 + 14 item adversarial (`adversarial_v2.json`), `config/fm_map.yaml` map 8 cơ chế sang FM-02…FM-09. Mỗi FM bị tấn công có ≥3 item (`evalset --v2` 0 problem). Slice theo nhãn: money_movement 12, denial 11, adversarial 14, escalation 4.
-- **Baseline v2** `E-swarm-20261118-77e7`: pass_rate 0.9786, pass_hat_5 0.8929, pass_at_5 1.0, reply_matches_ledger 1.0.
+- **Eval set v2** `8723efd3d05f`: 14 item v1 + 14 item adversarial (`adversarial_v2.json`), `config/fm_map.yaml` map 8 cơ chế sang FM-02…FM-09. Mỗi FM bị tấn công có ≥3 item (`evalset --v2` 0 problem). Slice theo nhãn: money_movement 12, denial 11, adversarial 14, escalation 4.
+- **Baseline v2** `E-swarm-20261118-8723`: pass_rate 0.9786, pass_hat_5 0.8929, pass_at_5 1.0, reply_matches_ledger 1.0.
 - **Ngưỡng chọn từ A/A** (`mutation --aa 66,77,88,99,110`): mọi metric Δ = +0.0000. MockLLM tất định, và điểm yếu `seed % 5 == 0` của swarm rơi vào đúng 1/5 seed ở cả hai bộ (55 và 110), nên dải nhiễu = [0, 0]. Sàn `pass_hat_5` = **0.88** (≥0.8): thấp hơn baseline 25/28 = 0.893 nên baseline tự so vẫn merge, và cao hơn 24/28 = 0.857 nên chỉ cần thêm **một** item fail ở bất kỳ seed nào là chặn. Với LLM thật, sampling làm hai bộ seed cho kết quả khác nhau, A/A Δ > 0, nên sàn phải đặt ở baseline − max|Δ A/A| (chạy A/A nhiều lần), nếu không gate sẽ chặn PR trung thực một cách ngẫu nhiên.
 - **Slice nào bắt lỗi nào** (scorecard `python -m lab9.mutation …` = **3/3, 0 báo nhầm**):
 
